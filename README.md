@@ -1,2 +1,2 @@
 # Course_OOPGames
-Object-oriented game programing
+Object-Oriented Game Programming
