@@ -26,6 +26,8 @@ Object-Oriented Game Programming
 2. 开发一款游戏（2+2）
 
 ## 练习程序
-请查看`Sample`文件夹
+请查看`Samples`文件夹
+
+----
 
 - This project is under [GNU GENERAL PUBLIC LICENSE](https://www.gnu.org/licenses/), please check it in the root folder.
