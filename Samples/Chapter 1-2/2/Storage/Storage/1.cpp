@@ -1,4 +1,5 @@
-#include <stdio.h> 
+#include <iostream>
+using namespace std;
 char GetGlobal(); 
 char Next(); 
 char Last(); 
@@ -8,15 +9,15 @@ int main()
 { 
 	char c = 'L';			// 定义局部变量c
 
-	printf("Local c in main function is: %c\n", c);	// 在当前函数中使用的变量c是局部变量
+	cout << "Local c in main function is: \n" << c << endl;	// 在当前函数中使用的变量c是局部变量
 
-	printf("Global c is: %c\n", GetGlobal());		// 获取全局变量
+	cout << "Global c is: \n" << GetGlobal() << endl;		// 获取全局变量
 
-	printf("Static c in file2 is: %c\n", Get());	// 获取文件2中的静态变量c
+	cout << "Static c in file2 is: \n" << Get() << endl;	// 获取文件2中的静态变量c
 	// 函数中的静态变量会保留
-	printf("Previous values of static c in file2 are: %c, %c, and %c\n", Last(), Last(), Last());	
-	printf("Next values of static c in file2 are: %c, %c, and %c\n", Next(), Next(), Next());
+	cout << "Previous values of static c in file2 are:\n" << Last() << Last() << Last() << endl;	
+	cout << "Next values of static c in file2 are: \n" << Next() << Next() << Next() << endl;
 
-	getchar();	// 程序暂停，等待用户输入，以便让用户看到前面的输出结果
+	cin >> c;	// 程序暂停，等待用户输入，以便让用户看到前面的输出结果
 	return 0;
 } 
