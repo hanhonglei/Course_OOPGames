@@ -28,7 +28,7 @@ Object-Oriented Game Programming
 ## 练习程序
 请查看`Samples`文件夹
 
-## Some details(sample can be found at (this project)[https://github.com/hanhonglei/Course_OOPGames/tree/master/Samples/Class])
+## Some details(sample can be found at [this project](https://github.com/hanhonglei/Course_OOPGames/tree/master/Samples/Class))
 1. The protection in `C++` is class level, not object level. So a method being invoked on one object can access private members of any other instance of the same class. More information please check [here](https://stackoverflow.com/questions/7396846/with-a-private-modifier-why-can-the-member-in-other-objects-be-accessed-directl)
 ```
 class A 
@@ -53,7 +53,7 @@ public:
 };
 ```
 
-2. Const object can only call const functions, even the object is some function's parameter. like the example below, the problem is `rhs` is declared as const, but `getData()` isn't, so it could be modifying rhs when you call it even though rhs is supposedly const. As `getData()` is an accessor, it should be const too.
+2. Const object can only call const functions, even the object is some function's parameter. like the example below, the problem is `rhs` is declared as const, but `getData()` isn't, so it could be modifying rhs when you call it even though rhs is supposedly const. As `getData()` is an accessor, it should be const too. More information can be found [here](https://stackoverflow.com/questions/2660400/copy-constructors-and-calling-functions).
 
 ```
 class A {
