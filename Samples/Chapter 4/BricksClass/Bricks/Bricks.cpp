@@ -29,9 +29,6 @@ INT_PTR CALLBACK	About(HWND, UINT, WPARAM, LPARAM);
 // 定义角色类
 class Actor{
 public:
-	int x;
-	int y;
-	bool bPlayer;
 	Actor(bool p = false):size(20){
 		RandPos();
 		bPlayer = p;
@@ -97,6 +94,9 @@ public:
 	}
 	//////////////////////////////////////////////////////////////////////////
 private:
+	int x;
+	int y;
+	bool bPlayer;
 	const int size;				// 砖块大小
 };
 
