@@ -9,7 +9,7 @@
 /************************************************************************/
 
 #include "stdafx.h"
-#include "Bricks.h"
+#include "ClassBricks.h"
 
 #define MAX_LOADSTRING 100
 
@@ -117,7 +117,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
 
 	// Initialize global strings
 	LoadString(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
-	LoadString(hInstance, IDC_BRICKS, szWindowClass, MAX_LOADSTRING);
+	LoadString(hInstance, IDC_CLASSBRICKS, szWindowClass, MAX_LOADSTRING);
 	MyRegisterClass(hInstance);
 
 	// Perform application initialization:
@@ -126,7 +126,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
 		return FALSE;
 	}
 
-	hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_BRICKS));
+	hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_CLASSBRICKS));
 
 	// create player and enemy [9/22/2017 Han]
 	player = new Actor(true);
@@ -172,10 +172,10 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
 	wcex.cbClsExtra		= 0;
 	wcex.cbWndExtra		= 0;
 	wcex.hInstance		= hInstance;
-	wcex.hIcon			= LoadIcon(hInstance, MAKEINTRESOURCE(IDI_BRICKS));
+	wcex.hIcon			= LoadIcon(hInstance, MAKEINTRESOURCE(IDI_CLASSBRICKS));
 	wcex.hCursor		= LoadCursor(NULL, IDC_ARROW);
 	wcex.hbrBackground	= (HBRUSH)(COLOR_WINDOW+1);
-	wcex.lpszMenuName	= MAKEINTRESOURCE(IDC_BRICKS);
+	wcex.lpszMenuName	= MAKEINTRESOURCE(IDC_CLASSBRICKS);
 	wcex.lpszClassName	= szWindowClass;
 	wcex.hIconSm		= LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
 
