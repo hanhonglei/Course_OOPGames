@@ -1,5 +1,5 @@
 #ifndef _CLASSES_H_
-#define  _CLASSES_H
+#define  _CLASSES_H_
 
 #define MAX_ENEMY 16			// 最大敌人数目
 #define MAX_BULLETS 32			// 最大子弹数目
@@ -40,7 +40,7 @@ public:
 	int WallCollide();
 	// 绘制参数指定的游戏实体
 	void DrawEntity(HDC hdc);
-	// 为该尸体设定特定参数
+	// 为该实体设定特定参数
 	void Set(int sz, COLORREF cl, Dir direction, int px, int py);
 };
 
