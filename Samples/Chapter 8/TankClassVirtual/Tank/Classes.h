@@ -13,6 +13,7 @@ const int enemyFirePer = 300;	// 敌人发射子弹的随机比例
 const int enemyDir = 200;		// 敌人改变方向的随机比例
 extern int wndWidth;	extern int wndHeight;  // 窗口尺寸
 extern bool bInit;				// 是否已经完成初始化
+#define ALL_ENTITIES MAX_ENEMY+MAX_BULLETS+MAX_BULLETS+1
 
 enum Dir{UP, DOWN, LEFT, RIGHT};// 枚举类型，运动物体可能的运动方向
 
@@ -29,6 +30,7 @@ protected:
 	int p;					// 是否停止,只有玩家才可能停止
 	int e;					// 是否是敌人
 	COLORREF c;				// 颜色
+	bool isValid;			//
 public:
 	// 默认构造函数
 	Entity();
@@ -39,9 +41,11 @@ public:
 	// 判断特定实体是否和边界发生碰撞
 	int WallCollide();
 	// 绘制参数指定的游戏实体
-	void DrawEntity(HDC hdc);
+	virtual void DrawEntity(HDC hdc);
 	// 为该实体设定特定参数
-	void Set(int sz, COLORREF cl, Dir direction, int px, int py);
+	void Set(int sz, COLORREF cl, Dir direction, int px, int py, bool bv = true);
+	void SetValid(bool bv);
+	bool IsValid();
 };
 
 class Tank:public Entity		// 坦克基类，继承自游戏实体类
@@ -85,5 +89,6 @@ extern EnemyTank enemys[MAX_ENEMY];		// 敌人数组
 extern PlayerTank player;				// 玩家
 extern Entity bullets[MAX_BULLETS];		// 玩家子弹数组
 extern Entity enemyBullets[MAX_BULLETS];// 敌人子弹数组
+extern Entity* allEntities[ALL_ENTITIES];
 
 #endif // _CLASSES_H_

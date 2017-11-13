@@ -29,11 +29,20 @@ INT_PTR CALLBACK	About(HWND, UINT, WPARAM, LPARAM);
 // 游戏初始化
 void Init()
 {
+	int i = 0;
 	for(EnemyTank::nEnemy = 0; EnemyTank::nEnemy < MAX_ENEMY; EnemyTank::nEnemy++)
 	{
 		enemys[EnemyTank::nEnemy].Init();
+		allEntities[i++] = & enemys[EnemyTank::nEnemy];
+	}
+	for (int n = 0; n < MAX_BULLETS; n++)
+	{
+		allEntities[i++] = &bullets[n];
+		allEntities[i++] = &enemyBullets[n];
 	}
 	player.ResetPlayer();
+	allEntities[i++] = &player;
+
 	bInit = true;
 }
 
@@ -41,11 +50,13 @@ void Init()
 void Destroy(Entity ents[], int n, int *num)
 {
 	memcpy(ents+n, ents+n+1, sizeof(Entity)*((*num)-1-n));
+	ents[*num-1].SetValid(false);
 	(*num)--;
 }
 void Destroy(EnemyTank ents[], int n, int *num)
 {
 	memcpy(ents+n, ents+n+1, sizeof(EnemyTank)*((*num)-1-n));
+	ents[*num-1].SetValid(false);
 	(*num)--;
 }
 
@@ -164,15 +175,17 @@ void DrawScene(HDC hdc)
 	DeleteObject(hf);
 
 	// 绘制各种游戏实体
-	Entity* ent = NULL;
-	for (int i = 0; i < EnemyTank::nEnemy; i++)		// 敌人
-		enemys[i].DrawEntity(hdc);
-	for (int i = 0; i < PlayerTank::nBullet; i++)		// 玩家发出的炮弹
-		bullets[i].DrawEntity(hdc);
-	for (int i = 0; i < EnemyTank::nEnemyBullet; i++)	// 敌人发出的炮弹
-		enemyBullets[i].DrawEntity(hdc);
+	//Entity* ent = NULL;
+	//for (int i = 0; i < EnemyTank::nEnemy; i++)		// 敌人
+	//	enemys[i].DrawEntity(hdc);
+	//for (int i = 0; i < PlayerTank::nBullet; i++)		// 玩家发出的炮弹
+	//	bullets[i].DrawEntity(hdc);
+	//for (int i = 0; i < EnemyTank::nEnemyBullet; i++)	// 敌人发出的炮弹
+	//	enemyBullets[i].DrawEntity(hdc);
 
-	player.DrawEntity(hdc);				// 玩家
+	//player.DrawEntity(hdc);				// 玩家
+	for (int i = 0; i < ALL_ENTITIES; i++)
+		allEntities[i]->DrawEntity(hdc);
 }
 
 int APIENTRY _tWinMain(HINSTANCE hInstance,

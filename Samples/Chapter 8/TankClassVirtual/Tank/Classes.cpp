@@ -9,12 +9,14 @@ EnemyTank enemys[MAX_ENEMY];		// 敌人数组
 PlayerTank player;					// 玩家
 Entity bullets[MAX_BULLETS];		// 玩家子弹数组
 Entity enemyBullets[MAX_BULLETS];	// 敌人子弹数组
+Entity* allEntities[ALL_ENTITIES];
 
 Entity::Entity()
 {
 	b = 1;
 	e = 0;
 	p = 0;
+	isValid = true;
 }
 // 对特定游戏实体依据朝向和速率进行移动
 void Entity::Move(int ts)
@@ -36,6 +38,10 @@ void Entity::Move(int ts)
 		x += v * ts;
 		break;
 	}
+}
+void Entity::SetValid(bool bv)
+{
+	isValid = bv;
 }
 
 // 判断两个实体是否发生碰撞,以正方形之间发生碰撞来判断
@@ -95,6 +101,8 @@ int Entity::WallCollide()
 // 绘制参数指定的游戏实体
 void Entity::DrawEntity(HDC hdc)
 {
+	if (!IsValid())
+		return;
 	HBRUSH brush;
 	brush = CreateSolidBrush(c);		// 按照实体指定的颜色创建笔刷
 	RECT rc;								// 实体长方形
@@ -106,7 +114,11 @@ void Entity::DrawEntity(HDC hdc)
 
 	DeleteObject(brush);			// 将使用完的笔刷删除
 }
-void Entity::Set(int sz, COLORREF cl, Dir direction, int px, int py)
+bool Entity::IsValid()
+{
+	return isValid;
+}
+void Entity::Set(int sz, COLORREF cl, Dir direction, int px, int py, bool bv)
 {
 	s = sz;
 	c = cl;	// 敌人发出炮弹和玩家发出的不一样
@@ -115,6 +127,7 @@ void Entity::Set(int sz, COLORREF cl, Dir direction, int px, int py)
 	x = px;
 	p = 0;
 	y = py;
+	isValid = bv;
 
 	switch(dir)	// 炮弹方向就是此时射击物体的朝向
 	{
@@ -138,6 +151,8 @@ int Entity::number = 0;
 
 void Tank::DrawEntity(HDC hdc)
 {
+	if (!IsValid())
+		return;
 	HBRUSH brush;
 	brush = CreateSolidBrush(c);		// 按照实体指定的颜色创建笔刷
 	RECT rc;								// 实体长方形
