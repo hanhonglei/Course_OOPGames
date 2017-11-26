@@ -29,120 +29,118 @@ INT_PTR CALLBACK	About(HWND, UINT, WPARAM, LPARAM);
 // 游戏初始化
 void Init()
 {
-	int i = 0;
-	for(EnemyTank::nEnemy = 0; EnemyTank::nEnemy < MAX_ENEMY; EnemyTank::nEnemy++)
+	for (int i =0; i < MAX_ENEMY; i++)
 	{
-		enemys[EnemyTank::nEnemy].Init();
-		allEntities[i++] = & enemys[EnemyTank::nEnemy];
-	}
-	for (int n = 0; n < MAX_BULLETS; n++)
-	{
-		allEntities[i++] = &bullets[n];
-		allEntities[i++] = &enemyBullets[n];
+		EnemyTank* e = new EnemyTank;
+		e->Init();
+		enemys.push_back(e);
 	}
 	player.ResetPlayer();
-	allEntities[i++] = &player;
+	allEntities.push_back(&player);
 
 	bInit = true;
 }
 
 // 将特定的实体从数组中删除,后续元素向前移动
-void Destroy(Entity ents[], int n, int *num)
-{
-	memcpy(ents+n, ents+n+1, sizeof(Entity)*((*num)-1-n));
-	ents[*num-1].SetValid(false);
-	(*num)--;
-}
-void Destroy(EnemyTank ents[], int n, int *num)
-{
-	memcpy(ents+n, ents+n+1, sizeof(EnemyTank)*((*num)-1-n));
-	ents[*num-1].SetValid(false);
-	(*num)--;
-}
+//void Destroy(Entity ents[], int n, int *num)
+//{
+//	memcpy(ents+n, ents+n+1, sizeof(Entity)*((*num)-1-n));
+//	ents[*num-1].SetValid(false);
+//	(*num)--;
+//}
+//void Destroy(EnemyTank ents[], int n, int *num)
+//{
+//	memcpy(ents+n, ents+n+1, sizeof(EnemyTank)*((*num)-1-n));
+//	ents[*num-1].SetValid(false);
+//	(*num)--;
+//}
 
 // 更新各种游戏信息,定时器消息中会调用这个函数
 void Update(int ts)
 {
 	// 可移动物体位置进行更新
-	for (int i = 0; i < EnemyTank::nEnemy; i++)	// 敌人位置更新
-	{
-		enemys[i].Move(ts);
-		enemys[i].Fire();
-	}
-	for (int i = 0; i < PlayerTank::nBullet; i++)	// 玩家炮弹位置进行更行
-	{
-		bullets[i].Move(ts);
-	}
-	for (int i = 0; i < EnemyTank::nEnemyBullet; i++)	// 敌人炮弹位置进行更新
-	{
-		enemyBullets[i].Move(ts);
-	}
 	player.Move(ts);					// 玩家位置进行更新
-
 	player.Fire();						// 玩家开火
 
-
-	// 判断子弹是否和敌人碰撞
-	for(int i = 0; i < PlayerTank::nBullet; i++)
+	for (list<EnemyTank*>::iterator ite = enemys.begin(); ite != enemys.end(); ite++)	// 敌人位置更新
 	{
-		for (int j = 0; j < EnemyTank::nEnemy; j++)
+		(*ite)->Move(ts);
+		(*ite)->Fire();
+		if (player.IsCollide(*ite))
 		{
-			if (bullets[i].IsCollide(&enemys[j]))
+			player.ResetPlayer();
+			player.nLife--;
+		}
+
+		if ((*ite)->WallCollide())		// 有一定几率改变方向
+		{
+			(*ite)->RandDir();
+		}
+
+	}
+
+	bool hit = false;
+	for (list<Entity*>::iterator ite = bullets.begin(); ite != bullets.end();)	// 玩家炮弹位置进行更行
+	{
+		(*ite)->Move(ts);
+		if ((*ite)->WallCollide())
+		{
+			Entity *p = *ite;
+			ite=bullets.erase(ite);
+			delete p;
+			continue;
+		}		
+		hit = false;
+		// 判断子弹是否和敌人碰撞
+		for (list<EnemyTank*>::iterator iteE = enemys.begin(); iteE != enemys.end();)
+		{
+			if ((*ite)->IsCollide(*iteE))
 			{
-				Destroy(bullets, i, &PlayerTank::nBullet);
-				Destroy(enemys, j, &EnemyTank::nEnemy);
+				Entity *p1 = *ite;
+				EnemyTank *p2 = *iteE;
+				ite=bullets.erase(ite);
+				iteE=enemys.erase(iteE);
+				delete p1, p2;
 				player.nScore++;
-				i--;
-				j--;
+				hit = true;
 				break;
 			}
+			else
+				++iteE;
 		}
+
+		if (!hit)
+			++ite;
 	}
-	// 判断敌人的子弹是否和玩家碰撞
-	for(int i = 0; i < EnemyTank::nEnemyBullet; i++)
+	hit = false;
+	for (list<Entity*>::iterator ite = enemyBullets.begin(); ite != enemyBullets.end();)	// 敌人炮弹位置进行更新
 	{
-		if (enemyBullets[i].IsCollide(&player))
+		(*ite)->Move(ts);
+		// 判断敌人的子弹是否和玩家碰撞
+		if (!hit)
 		{
-			Destroy(enemyBullets, i, &EnemyTank::nEnemyBullet);
-			player.ResetPlayer();
-			player.nLife--;
-			i--;
-			break;
+			if((*ite)->IsCollide(&player))
+			{
+				Entity* p = *ite;
+				ite = enemyBullets.erase(ite);
+				delete p;
+				hit = true;
+				player.ResetPlayer();
+				player.nLife--;
+				hit = true;
+				continue;
+			}			
 		}
-	}
-	// 判断敌人是否和玩家碰撞
-	for (int i = 0; i < EnemyTank::nEnemy; i++)
-	{
-		if (player.IsCollide(&enemys[i]))
+		if ((*ite)->WallCollide())
 		{
-			player.ResetPlayer();
-			player.nLife--;
+			Entity* p = *ite;
+			ite = enemyBullets.erase(ite);
+			delete p;
 		}
+		else
+			++ite;
 	}
-	// 判断各种实体是否和游戏边界发生碰撞
-	for (int i = 0; i < EnemyTank::nEnemy; i++)	// 敌人
-	{
-		if (!enemys[i].WallCollide())		// 有一定几率改变方向
-		{
-			enemys[i].RandDir();
-		}
-	}
-	for (int i = 0; i < PlayerTank::nBullet; i++)	// 玩家炮弹
-	{
-		if (bullets[i].WallCollide())
-		{
-			Destroy(bullets, i, &PlayerTank::nBullet);
-			i--;
-		}
-	}
-	for (int i = 0; i < EnemyTank::nEnemyBullet; i++)	// 敌人炮弹
-	{
-		if (enemyBullets[i].WallCollide())
-		{
-			Destroy(enemyBullets, i, &EnemyTank::nEnemyBullet);
-			i--;
-		}
-	}
+
 	player.WallCollide();			// 玩家
 }
 
@@ -175,17 +173,16 @@ void DrawScene(HDC hdc)
 	DeleteObject(hf);
 
 	// 绘制各种游戏实体
-	//Entity* ent = NULL;
-	//for (int i = 0; i < EnemyTank::nEnemy; i++)		// 敌人
-	//	enemys[i].DrawEntity(hdc);
-	//for (int i = 0; i < PlayerTank::nBullet; i++)		// 玩家发出的炮弹
-	//	bullets[i].DrawEntity(hdc);
-	//for (int i = 0; i < EnemyTank::nEnemyBullet; i++)	// 敌人发出的炮弹
-	//	enemyBullets[i].DrawEntity(hdc);
+	for (list<EnemyTank*>::iterator ite = enemys.begin(); ite != enemys.end(); ite++)	// 敌人位置更新
+		(*ite)->DrawEntity(hdc);
 
-	//player.DrawEntity(hdc);				// 玩家
-	for (int i = 0; i < ALL_ENTITIES; i++)
-		allEntities[i]->DrawEntity(hdc);
+	for (list<Entity*>::iterator ite = bullets.begin(); ite != bullets.end();ite++)	// 玩家炮弹位置进行更行
+		(*ite)->DrawEntity(hdc);
+
+	for (list<Entity*>::iterator ite = enemyBullets.begin(); ite != enemyBullets.end();ite++)	// 敌人炮弹位置进行更新
+		(*ite)->DrawEntity(hdc);
+
+	player.DrawEntity(hdc);				// 玩家
 }
 
 int APIENTRY _tWinMain(HINSTANCE hInstance,
@@ -387,6 +384,16 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_DESTROY:
 		KillTimer(hWnd,1);		// 程序退出时，将定时器删除
 		PostQuitMessage(0);
+		for (list<EnemyTank*>::iterator ite = enemys.begin(); ite != enemys.end(); ite++)	
+			delete *ite;
+
+		for (list<Entity*>::iterator ite = bullets.begin(); ite != bullets.end();ite++)	
+			delete *ite;
+
+		for (list<Entity*>::iterator ite = enemyBullets.begin(); ite != enemyBullets.end();ite++)
+			delete *ite;
+
+
 		break;
 	default:
 		return DefWindowProc(hWnd, message, wParam, lParam);

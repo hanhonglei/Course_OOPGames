@@ -1,8 +1,8 @@
 #ifndef _CLASSES_H_
 #define  _CLASSES_H_
-
-#define MAX_ENEMY 16			// 最大敌人数目
-#define MAX_BULLETS 32			// 最大子弹数目
+#include <list>
+using namespace std;
+const int MAX_ENEMY = 16;
 const int timeStep = 20;		// 定时器时间间隔
 const int sz = 50;				// 坦克尺寸
 const int velf = 4;				// 快速坦克速率
@@ -13,7 +13,6 @@ const int enemyFirePer = 300;	// 敌人发射子弹的随机比例
 const int enemyDir = 200;		// 敌人改变方向的随机比例
 extern int wndWidth;	extern int wndHeight;  // 窗口尺寸
 extern bool bInit;				// 是否已经完成初始化
-#define ALL_ENTITIES MAX_ENEMY+MAX_BULLETS+MAX_BULLETS+1
 
 enum Dir{UP, DOWN, LEFT, RIGHT};// 枚举类型，运动物体可能的运动方向
 
@@ -85,10 +84,10 @@ public:
 	void Fire();
 };
 
-extern EnemyTank enemys[MAX_ENEMY];		// 敌人数组
+extern list<EnemyTank*> enemys;		// 敌人数组
 extern PlayerTank player;				// 玩家
-extern Entity bullets[MAX_BULLETS];		// 玩家子弹数组
-extern Entity enemyBullets[MAX_BULLETS];// 敌人子弹数组
-extern Entity* allEntities[ALL_ENTITIES];
+extern list<Entity*> bullets;		// 玩家子弹数组
+extern list<Entity*> enemyBullets;// 敌人子弹数组
+extern list<Entity*> allEntities;
 
 #endif // _CLASSES_H_

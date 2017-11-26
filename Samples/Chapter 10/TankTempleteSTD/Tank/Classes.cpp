@@ -5,11 +5,11 @@ int wndWidth = 0;	int wndHeight = 0;  // 窗口尺寸
 bool bInit = false;						// 是否已经完成初始化
 
 
-EnemyTank enemys[MAX_ENEMY];		// 敌人数组
-PlayerTank player;					// 玩家
-Entity bullets[MAX_BULLETS];		// 玩家子弹数组
-Entity enemyBullets[MAX_BULLETS];	// 敌人子弹数组
-Entity* allEntities[ALL_ENTITIES];
+list<EnemyTank*> enemys;	// 敌人数组
+PlayerTank player;			// 玩家
+list<Entity*> bullets;		// 玩家子弹数组
+list<Entity*> enemyBullets; // 敌人子弹数组
+list<Entity*> allEntities;
 
 Entity::Entity()
 {
@@ -256,10 +256,9 @@ void PlayerTank::Fire()
 	if (bFire)
 	{
 		bFire = false;
-		Entity *pBulletes = bullets;	// 判断是敌人还是玩家发射炮弹
-		if (nBullet >= MAX_BULLETS)
-			return;
-		pBulletes[nBullet].Set(szb, RGB(255,0,0), dir, x, y);
+		Entity *pBulletes = new Entity;	// 判断是敌人还是玩家发射炮弹
+		pBulletes->Set(szb, RGB(255,0,0), dir, x, y);
+		bullets.push_back(pBulletes);
 		PlayerTank::nBullet++;
 	}
 }
@@ -277,12 +276,8 @@ void EnemyTank::Fire()
 {
 	if ((rand()%enemyFirePer) == 0)
 	{
-		Entity *pBulletes = enemyBullets;	// 判断是敌人还是玩家发射炮弹
-		if (nEnemyBullet >= MAX_BULLETS)
-			return;
-		pBulletes[nEnemyBullet].Set(szb, RGB(0,0,255), dir, x, y);
-		nEnemyBullet++;
+		Entity *pBulletes = new Entity;	// 判断是敌人还是玩家发射炮弹
+		pBulletes->Set(szb, RGB(0,0,255), dir, x, y);
+		enemyBullets.push_back(pBulletes);
 	}
 }
-int EnemyTank::nEnemyBullet = 0;
-int EnemyTank::nEnemy = 0;				// 当前的敌人数量
