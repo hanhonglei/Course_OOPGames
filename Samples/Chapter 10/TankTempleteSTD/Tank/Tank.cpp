@@ -113,6 +113,7 @@ void Update(int ts)
 			++ite;
 	}
 	hit = false;
+	for_each(enemyBullets.begin(), enemyBullets.end())
 	for (list<Entity*>::iterator ite = enemyBullets.begin(); ite != enemyBullets.end();)	// 敌人炮弹位置进行更新
 	{
 		(*ite)->Move(ts);

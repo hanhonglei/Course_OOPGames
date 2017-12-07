@@ -7,7 +7,7 @@ using namespace std;
 // 用户自定义数据类型
 class RealData
 {
-	private: 
+private: 
 	int score;
 	int id;
 	char s;

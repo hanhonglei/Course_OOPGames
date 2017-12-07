@@ -1,7 +1,7 @@
 // TankFinal.cpp : Defines the entry point for the application.
 //
 /************************************************************************/
-/*	程序目的：指针的高级应用，链表、动态分配删除内存
+/*	程序目的：类、标准模板、类的继承、静态成员变量、窗口图像操作、双缓存避免绘制更新闪烁、游戏逻辑实现、完整的游戏工程
 	程序功能：最终版坦克大战。在游戏场景的顶端三个点随机生成两种不同的敌方坦克
 		玩家坦克在下方居中。方向键控制坦克前进方向，空格键发射炮弹。
 		游戏具备了读取ini文件、txt文件的能力，不在代码中设置游戏参数
@@ -22,9 +22,8 @@
 #include "stdafx.h"
 #include "TankFinal.h"
 #include <time.h>
-#include "Init.h"
-#include "GameProc.h"
 #include "Entity.h"
+#include "GameManage.h"
 
 #define MAX_LOADSTRING 100
 
@@ -33,8 +32,6 @@ HINSTANCE hInst;								// current instance
 TCHAR szTitle[MAX_LOADSTRING];					// The title bar text
 TCHAR szWindowClass[MAX_LOADSTRING];			// the main window class name
 
-int reset_time = 0;								// 标识是否对计时器进行重置
-	
 // Forward declarations of functions included in this code module:
 ATOM				MyRegisterClass(HINSTANCE hInstance);
 BOOL				InitInstance(HINSTANCE, int);
@@ -66,8 +63,8 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
 
 	hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_TANKFINAL));
 
-	srand(time(NULL));			// 随机种子
-	ChangeLevel(OPEN);			// 首先进入游戏欢迎界面
+	srand(unsigned int (time(NULL)));						// 随机种子
+	GameManage::ChangeLevel(OPEN);			// 首先进入游戏欢迎界面
 
 	// Main message loop:
 	while (GetMessage(&msg, NULL, 0, 0))
@@ -183,41 +180,46 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		}
 		break;
 	case WM_CREATE:			// 程序启动后,开始设置3个定时器
-		SetTimer(hWnd,1,GetTimeStep(),NULL);
-		SetTimer(hWnd,2,GetBirthTime(),NULL);
-		SetTimer(hWnd,3,GetAnimStep(),NULL);
+		GameManage::timeStep = 20;			// 定时器时间间隔
+		GameManage::animStep = 100;			// 动画帧更新定时器时间间隔
+		GameManage::birthTime = 5000;		// 敌人的出生时间间隔
+		GameManage::hInst = hInst;
+		GameManage::reset_time = true;
+		SetTimer(hWnd,1,GameManage::timeStep,NULL);
+		SetTimer(hWnd,2,GameManage::birthTime,NULL);
+		SetTimer(hWnd,3,GameManage::animStep,NULL);
 		break;
 	case WM_TIMER:			// 定时器响应
 		InvalidateRect(hWnd, NULL, TRUE);	// 让窗口变为无效,从而触发重绘消息
 		switch (wParam) 
 		{ 
 		case 1:				// 1号定时器用于更新游戏内容
-			Update(GetTimeStep()/10);
-			if (reset_time)	// 重新载入关卡之后，按照新的参数设置定时器
+			GameManage::Update(GameManage::timeStep/10);
+			if (GameManage::reset_time)	// 重新载入关卡之后，按照新的参数设置定时器
 			{
-				reset_time = 0;
+				GameManage::reset_time = false;
 				KillTimer(hWnd,1);		// 程序退出时，将定时器删除
 				KillTimer(hWnd,2);
 				KillTimer(hWnd,3);
-				SetTimer(hWnd,1,GetTimeStep(),NULL);
-				SetTimer(hWnd,2,GetBirthTime(),NULL);
-				SetTimer(hWnd,3,GetAnimStep(),NULL);
+				SetTimer(hWnd,1,GameManage::timeStep,NULL);
+				SetTimer(hWnd,2,GameManage::birthTime,NULL);
+				SetTimer(hWnd,3,GameManage::animStep,NULL);
 			}
 			break ; 
 		case 2:				// 2号定时器用于生成敌人坦克
-			EnemyBirth();
+			GameManage::EnemyBirth();
 			break ; 
 		case 3:				// 3号定时器用于更新动画帧
-			NextFrame(GetAnimStep());
+			GameManage::NextFrame(GameManage::timeStep);
 			break ; 
 		} 
 		break;
 	case WM_SIZE:			// 获取窗口的尺寸
-		ChangeWndSize(LOWORD(lParam), HIWORD(lParam));
+		GameManage::ChangeWndSize(LOWORD(lParam), HIWORD(lParam));
 		break;
 	case WM_KEYDOWN:		// 玩家按下按键消息交由GameProc文件中的特定函数处理
 		InvalidateRect(hWnd, NULL, TRUE);
-		EnterKey(wParam);
+		GameManage::EnterKey(wParam);
 		break;
 	case WM_ERASEBKGND:		// 不擦除背景,避免闪烁
 		break;
@@ -225,7 +227,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		{
 			hdc = BeginPaint(hWnd, &ps);
 			// TODO: Add any drawing code here...
-			Draw(hdc, hWnd);		// 进行游戏绘制
+			GameManage::Draw(hdc, hWnd);		// 进行游戏绘制
 			EndPaint(hWnd, &ps);
 			break;
 		}
@@ -233,7 +235,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		KillTimer(hWnd,1);		// 程序退出时，将定时器删除
 		KillTimer(hWnd,2);
 		KillTimer(hWnd,3);
-		Destroy();
+		GameManage::Destroy();
 		PostQuitMessage(0);
 		break;
 	default:
