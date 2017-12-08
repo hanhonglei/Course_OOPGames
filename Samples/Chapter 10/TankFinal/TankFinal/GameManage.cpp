@@ -3,6 +3,8 @@
 /************************************************************************/
 #include "StdAfx.h"
 #include "GameManage.h"
+#include <mmsystem.h>
+#include <process.h> 
 
 // static 成员变量的定义
 GameScene *(GameManage::curScene) = NULL;
@@ -20,6 +22,11 @@ GameManage::GameManage(void)
 }
 GameManage::~GameManage(void)
 {
+}
+
+void GameManage::PlayWaveResource(void *name)
+{ 
+	PlaySound((LPCWSTR)name, GameManage::hInst,  SND_FILENAME | SND_ASYNC);
 }
 void GameManage::NextFrame(int step)
 {
@@ -75,15 +82,18 @@ void GameManage::ChangeLevel(LEVEL newL)
 	case OPEN:					
 		logo = (logo==NULL)?(HBITMAP)LoadImage( NULL, L"Resources\\logo.bmp", IMAGE_BITMAP, 0, 0,
 			LR_CREATEDIBSECTION | LR_DEFAULTSIZE | LR_LOADFROMFILE ):logo;
+		_beginthread(PlayWaveResource, 0, L"Resources\\Start.wav");  
 		break;
 	case LEVEL2_OPEN:	
 	case SUCCEED:
 		succ_pic = (succ_pic==NULL)?(HBITMAP)LoadImage( NULL, L"Resources\\success.bmp", IMAGE_BITMAP, 0, 0,
 			LR_CREATEDIBSECTION | LR_DEFAULTSIZE | LR_LOADFROMFILE ):succ_pic;
+		_beginthread(PlayWaveResource, 0, L"Resources\\Succ.wav");  
 		break;
 	case FAIL:
 		fail_pic = (fail_pic==NULL)?(HBITMAP)LoadImage( NULL, L"Resources\\fail.bmp", IMAGE_BITMAP, 0, 0,
 			LR_CREATEDIBSECTION | LR_DEFAULTSIZE | LR_LOADFROMFILE ):fail_pic;
+		_beginthread(PlayWaveResource, 0, L"Resources\\Fail.wav");  
 		break;
 	}
 }

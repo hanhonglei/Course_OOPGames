@@ -5,6 +5,17 @@
 /************************************************************************/
 #include "stdafx.h"
 #include "Entity.h"
+#include "Windows.h"
+#include <MMSystem.h>
+#include "GameManage.h"
+#include "resource.h"
+#include <stdlib.h>  
+#include <string.h>  
+#include <stdio.h>  
+#include <conio.h>  
+#include <process.h>  
+#pragma comment(lib,"winmm.lib")
+
 
 // 绘制参数指定的游戏实体
 void Entity::DrawEntity(HDC hdc)
@@ -122,7 +133,7 @@ const int Entity::GetY()
 }
 //////////////////////////////////////////////////////////////////////////
 // Tank class
-
+ 
 // 特定实体进行射击操作
 Entity * Tank::Fire(HBITMAP bulletAnim[4], int vel, int fs, int size)
 {
@@ -142,6 +153,9 @@ Entity * Tank::Fire(HBITMAP bulletAnim[4], int vel, int fs, int size)
 		newBullet->SetX(newBullet->GetX()+s);
 		break;
 	}
+	// 播放发射音乐
+	_beginthread( GameManage::PlayWaveResource, 0, L"Resources\\Fire.wav");  
+
 	return newBullet;
 }
 
@@ -170,6 +184,9 @@ void Tank::ChangeDir(Dir newD)
 {
 	dir = newD;
 	p = false;
+	// 播放发射音乐
+	_beginthread(GameManage::PlayWaveResource, 0, L"Resources\\Drive.wav");  
+
 }
 int Tank::GetLife()
 {

@@ -5,6 +5,8 @@
 #include "GameScene.h"
 #include "resource.h"
 #include "GameManage.h"
+#include <fstream>
+#include <mmsystem.h>
 
 GameScene::GameScene(LEVEL l):curL(l)
 {
@@ -41,6 +43,8 @@ GameScene::~GameScene(void)
 	pHeadBullets.clear();
 	pHeadEnemyBullets.clear();
 	pHeadEnemys.clear();
+	// Stop all sounds
+	PlaySound(NULL, GameManage::hInst, NULL);
 }
 // 绘制链表中的每个实体
 void GameScene::DrawEntities(HDC hdc)
@@ -481,8 +485,7 @@ void GameScene::InitMap()
 	default:
 		return;
 	}
-	FILE *f;
-	fopen_s(&f, fileName, "r");
+	ifstream f(fileName);
 	if (f == NULL)
 		return;
 	char line[64];
@@ -493,15 +496,14 @@ void GameScene::InitMap()
 	HBITMAP anim[4];
 	anim[0] = anim[1] = anim[2] = anim[3] = block;
 
-	while(!feof(f))
+	while(f.getline(line, 64))
 	{
-		fgets(line, 64, f);
 		for (int i = 0; line[i] != '\0'; i++)
 			if (line[i] == '1')
 				pHeadBlocks.push_back(new Entity(size/2+size*i, size/2+size*nLine,NONE,0,size,1,1,true,0,anim));
 		nLine++;
 	}
-	fclose(f);
+	f.close();
 }
 // 依据不同的关卡，对游戏参数进行初始化
 void GameScene::Init()

@@ -26,6 +26,7 @@ public:
 	static void ChangeLevel(LEVEL newL);	// 转换关卡
 	static void Update(int ts);		// 更新各种游戏信息,定时器会触发这个函数
 	static void Draw(HDC hdc, HWND hWnd);	// 绘制当前关卡
+	static void PlayWaveResource(void *name);
 
 	GameManage(void);
 	~GameManage(void);

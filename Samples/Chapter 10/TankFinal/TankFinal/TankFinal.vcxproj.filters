@@ -31,6 +31,15 @@
     <None Include="Resources\Rock.bmp">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="Resources\Obstacle_note.bmp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Resources\Obstacle_crayon.bmp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Resources\Fire.wav">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
