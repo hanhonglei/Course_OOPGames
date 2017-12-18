@@ -25,9 +25,6 @@
     <None Include="Resources\grass.bmp">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="resources\bitmap1.bmp">
-      <Filter>Resource Files</Filter>
-    </None>
     <None Include="Resources\Rock.bmp">
       <Filter>Resource Files</Filter>
     </None>

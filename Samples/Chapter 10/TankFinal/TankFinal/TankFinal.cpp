@@ -180,11 +180,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		}
 		break;
 	case WM_CREATE:			// 程序启动后,开始设置3个定时器
-		GameManage::timeStep = 20;			// 定时器时间间隔
-		GameManage::animStep = 100;			// 动画帧更新定时器时间间隔
-		GameManage::birthTime = 5000;		// 敌人的出生时间间隔
-		GameManage::hInst = hInst;
-		GameManage::reset_time = true;
+		GameManage::Init(hInst);
 		SetTimer(hWnd,1,GameManage::timeStep,NULL);
 		SetTimer(hWnd,2,GameManage::birthTime,NULL);
 		SetTimer(hWnd,3,GameManage::animStep,NULL);

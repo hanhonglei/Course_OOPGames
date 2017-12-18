@@ -24,6 +24,21 @@ GameManage::~GameManage(void)
 {
 }
 
+void GameManage::Init(HINSTANCE hI)
+{
+	hInst = hI;
+	reset_time = true;
+	timeStep = 20;			// 定时器时间间隔
+	animStep = 100;			// 动画帧更新定时器时间间隔
+	birthTime = 5000;		// 敌人的出生时间间隔
+
+	WCHAR *fileIni = L"Resources\\Init.ini";
+	animStep=GetPrivateProfileInt(L"Global", L"animStep",GameManage::animStep, fileIni);
+	timeStep=GetPrivateProfileInt(L"Global", L"timeStep",GameManage::timeStep, fileIni);
+	birthTime = GetPrivateProfileInt(L"Enemy", L"birthTime",GameManage::birthTime, fileIni);
+
+}
+
 void GameManage::PlayWaveResource(void *name)
 { 
 	PlaySound((LPCWSTR)name, GameManage::hInst,  SND_FILENAME | SND_ASYNC);

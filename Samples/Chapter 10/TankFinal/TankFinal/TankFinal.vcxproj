@@ -77,7 +77,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <None Include="ReadMe.txt" />
-    <None Include="resources\bitmap1.bmp" />
     <None Include="Resources\Fire.wav" />
     <None Include="Resources\grass.bmp" />
     <None Include="Resources\Obstacle_crayon.bmp" />

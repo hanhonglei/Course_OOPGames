@@ -27,6 +27,7 @@ public:
 	static void Update(int ts);		// 更新各种游戏信息,定时器会触发这个函数
 	static void Draw(HDC hdc, HWND hWnd);	// 绘制当前关卡
 	static void PlayWaveResource(void *name);
+	static void Init(HINSTANCE hI = NULL);
 
 	GameManage(void);
 	~GameManage(void);

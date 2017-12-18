@@ -455,16 +455,13 @@ void GameScene::ReadIni()
 		break;
 	case LEVEL2_OPEN:
 		break;
-	case LEVEL2:
+	case LEVEL2:	
 		fileIni = L"Resources\\Init2.ini";
 		break;
 	default:
 		fileIni = L"Resources\\Init.ini";
 		return;
 	}
-	GameManage::animStep=GetPrivateProfileInt(L"Global", L"animStep",GameManage::animStep, fileIni);
-	GameManage::timeStep=GetPrivateProfileInt(L"Global", L"timeStep",GameManage::timeStep, fileIni);
-	GameManage::birthTime = GetPrivateProfileInt(L"Enemy", L"birthTime",GameManage::birthTime, fileIni);
 	nPassScore=GetPrivateProfileInt(L"Global", L"nPassScore",nPassScore, fileIni);
 	enemyFirePer = GetPrivateProfileInt(L"Enemy", L"firePer",enemyFirePer, fileIni);
 	enemyDirPer = GetPrivateProfileInt(L"Enemy", L"dirPer",enemyDirPer, fileIni);
