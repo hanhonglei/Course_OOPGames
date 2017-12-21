@@ -3,6 +3,16 @@
 
 #include "stdafx.h"
 #include "TestRotateImage.h"
+/************************************************************************/
+/*  Include these headers and libs to support GDI+    
+	More information, you are referred to Microsoft website: https://msdn.microsoft.com/en-us/library/windows/desktop/ms533802(v=vs.85).aspx */
+#include <windows.h>
+#include <objidl.h>
+#include <gdiplus.h>
+#include <math.h>
+using namespace Gdiplus;
+#pragma comment (lib,"Gdiplus.lib")
+/************************************************************************/
 
 #define MAX_LOADSTRING 100
 
@@ -28,6 +38,13 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
  	// TODO: Place code here.
 	MSG msg;
 	HACCEL hAccelTable;
+/************************************************************************/
+/*  Init GDI+                                                                    */
+	GdiplusStartupInput gdiplusStartupInput;
+	ULONG_PTR           gdiplusToken;
+	// Initialize GDI+.
+	GdiplusStartup(&gdiplusToken, &gdiplusStartupInput, NULL);
+/************************************************************************/
 
 	// Initialize global strings
 	LoadString(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
@@ -51,6 +68,10 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
 			DispatchMessage(&msg);
 		}
 	}
+/************************************************************************/
+/*  Shut down it                                                                    */
+	GdiplusShutdown(gdiplusToken);
+/************************************************************************/
 
 	return (int) msg.wParam;
 }
@@ -156,10 +177,34 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		}
 		break;
 	case WM_PAINT:
+		{
 		hdc = BeginPaint(hWnd, &ps);
 		// TODO: Add any drawing code here...
+/************************************************************************/
+/*      use GDI+ to draw something, supporting rotation                                                               */
+		Graphics graphics(hdc);
+		Image image(L"Obstacle_note.bmp");	// the image
+		Size size(50, 100);					// displayed size of the image
+		Point pos(500, 200);					// the position of the displayed image
+		Point origin(-size.Width/2, -size.Height/2);
+		Rect r(origin, size);				// the display rect
+
+		graphics.SetSmoothingMode(SmoothingModeHighQuality);
+		graphics.TranslateTransform(float(pos.X), float(pos.Y)); // <== Use the TranslateTransform
+		graphics.RotateTransform(30.0f);
+		// draw up left part of the image into the rectangle
+		graphics.DrawImage(&image, r, 0, 0, image.GetWidth()/2, image.GetHeight()/2, UnitPixel);
+
+		// reset the transform, and then draw another picture
+		graphics.ResetTransform();
+		Image image2(L"TankBlue.bmp");	// the image
+		graphics.ScaleTransform(0.5, 0.5);
+		graphics.DrawImage(&image2, 1400, 0);
+/************************************************************************/
+
 		EndPaint(hWnd, &ps);
 		break;
+		}
 	case WM_DESTROY:
 		PostQuitMessage(0);
 		break;

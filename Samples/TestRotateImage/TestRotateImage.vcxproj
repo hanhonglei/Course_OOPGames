@@ -11,7 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{8A4067BE-949C-4AA4-A961-0DDB8AE8A483}</ProjectGuid>
+    <ProjectGuid>{0E13401C-96D6-49B3-A896-C7E4471A0D1C}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>TestRotateImage</RootNamespace>
   </PropertyGroup>
